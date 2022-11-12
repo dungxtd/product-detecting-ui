@@ -68,6 +68,7 @@ function BottomTabNavigator() {
         options={({ navigation }: RootTabScreenProps<'TabOne'>) => ({
           title: 'Tab One',
           tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+          headerShown: false ,
           headerRight: () => (
             <Pressable
               onPress={() => navigation.navigate('Modal')}
