@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import * as WebBrowser from "expo-web-browser";
+import { LinearGradient } from "expo-linear-gradient";
 import {
   Text,
   View,
@@ -12,6 +13,7 @@ import {
   SafeAreaView,
   ScrollView,
   Image,
+  Animated,
 } from "react-native";
 import Constants from "expo-constants";
 import { Camera, CameraType } from "expo-camera";
@@ -25,8 +27,21 @@ export default class TabOneScreen extends React.Component {
     hasCameraPermission: null,
     constants: Constants,
     type: CameraType.back,
-    loading: false,
     takenImage: null,
+    // loading: true,
+    // response: [
+    //   {
+    //     link: "https://www.google.com/url?q=https://yenfarmvn.com/products/banh-gao-ichi-lon-100gr&sa=U&ved=0ahUKEwiRlqOiyKj7AhUHCIgKHfCAC3AQ2SkILA&usg=AOvVaw270XRgFoMBJM7FFdS9G_lr",
+    //     origin: "từ Công ty TNHH Thực Phẩm Yen Farm",
+    //     price: 22,
+    //     "price-text": "22 ₫",
+    //     shipping: "",
+    //     source:
+    //       "https://encrypted-tbn2.gstatic.com/shopping?q=tbn:ANd9GcQxhFp_TgKuwaluu4eRQNobMdpupRhmDQVWcqt2oNcCdzE7puyZICrUH0Y9WASaDPJJ7s8o&usqp=CAE",
+    //     title: "Bánh gạo Ichi Lon 100gr",
+    //   },
+    // ],
+    loading: false,
     response: [],
   };
 
@@ -38,10 +53,10 @@ export default class TabOneScreen extends React.Component {
   takePicture = async () => {
     const me = this;
     if (me.camera) {
-      await this.camera.takePictureAsync().then((res) => {
+      this.camera.takePictureAsync().then((res) => {
         me.setState({ takenImage: res.uri });
-        me.onProcess(res.uri);
         me.setState({ loading: true });
+        me.onProcess(res.uri);
       });
     }
   };
@@ -321,27 +336,40 @@ export default class TabOneScreen extends React.Component {
             {(this.state.loading === true ||
               (this.state.loading === false &&
                 this.state.response.length > 0)) && (
-              <View
-                style={{
-                  backgroundColor: "#111",
-                  height: Dimensions.get("window").height,
-                  justifyContent: "center",
-                  flexDirection: "column",
-                }}
-              >
-                <TouchableNativeFeedback
-                  onPress={() => {
-                    this.setState({ response: [] });
+              <View style={{ width: "100%", height: "100%" }}>
+                <View
+                  style={{
+                    backgroundColor: "#111",
+                    height: Dimensions.get("window").height,
+                    justifyContent: "center",
+                    flexDirection: "column",
                   }}
-                  style={{ alignSelf: "center" }}
                 >
-                  <Image
-                    source={{ uri: this.state.takenImage ?? "#" }}
-                    style={{ width: "100%", height: "100%" }}
-                  />
-                </TouchableNativeFeedback>
-                <ScrollView
-                  horizontal={true}
+                  <TouchableNativeFeedback
+                    onPress={() => {
+                      this.setState({ response: [] });
+                    }}
+                    style={{ alignSelf: "center" }}
+                  >
+                    <Image
+                      source={{ uri: this.state.takenImage ?? "#" }}
+                      style={{ width: "100%", height: "100%" }}
+                    />
+                  </TouchableNativeFeedback>
+                  <ScrollView
+                    horizontal={true}
+                    style={{
+                      height: 210,
+                      width: "100%",
+                      position: "absolute",
+                      top: Dimensions.get("window").height - 340,
+                      left: 0,
+                      alignSelf: "center",
+                      paddingBottom: 12,
+                    }}
+                  ></ScrollView>
+                </View>
+                <View
                   style={{
                     height: 210,
                     width: "100%",
@@ -349,92 +377,177 @@ export default class TabOneScreen extends React.Component {
                     top: Dimensions.get("window").height - 340,
                     left: 0,
                     alignSelf: "center",
-                    paddingBottom: 12,
                   }}
-                ></ScrollView>
-              </View>
-            )}
-            {this.state.loading === false && this.state.response.length > 0 && (
-              <ScrollView
-                horizontal={true}
-                style={{
-                  height: 210,
-                  width: "100%",
-                  position: "absolute",
-                  top: Dimensions.get("window").height - 340,
-                  left: 0,
-                  alignSelf: "center",
-                  paddingBottom: 12,
-                }}
-              >
-                {this.state.response.map((data, i) => (
-                  <TouchableOpacity
-                    key={i + "TouchableOpacity"}
-                    onPress={() => {
-                      WebBrowser.openBrowserAsync(data.link);
-                    }}
-                    style={{ alignSelf: "center" }}
-                  >
-                    <View
-                      key={i + "wrapView"}
-                      style={{
-                        padding: 4,
-                        width: 150,
-                        backgroundColor: "#fff",
-                        marginRight: 8,
-                        borderRadius: 4,
-                        justifyContent: "center",
-                      }}
+                >
+                  {/* loading */}
+                  {this.state.loading === true && (
+                    <ScrollView
+                      scrollEnabled={!this.state.loading}
+                      horizontal={true}
+                      style={{ paddingBottom: 12 }}
                     >
-                      <Image
-                        key={i + "Image"}
-                        source={{ uri: data.source }}
-                        style={{ width: "100%", height: 130 }}
-                      />
-                      <Text
-                        key={i + "title"}
-                        numberOfLines={1}
+                      <View
                         style={{
-                          marginTop: 4,
                           padding: 4,
-                          fontSize: 12,
-                          fontWeight: "bold",
+                          width: 150,
+                          backgroundColor: "#fff",
+                          marginRight: 8,
+                          borderRadius: 4,
+                          justifyContent: "center",
+                          alignItems: "center",
                         }}
                       >
-                        {data.title}
-                      </Text>
-                      <Text
-                        key={i + "price-text"}
-                        numberOfLines={1}
+                        <Skeleton
+                          height={130}
+                          width={140}
+                          style={{ borderRadius: 10 }}
+                        />
+                        <Skeleton
+                          height={20}
+                          width={140}
+                          style={{ borderRadius: 10, marginTop: 4 }}
+                        />
+                        <Skeleton
+                          height={20}
+                          width={140}
+                          style={{ borderRadius: 10, marginTop: 4 }}
+                        />
+                      </View>
+                      <View
                         style={{
-                          paddingLeft: 4,
-                          padding: 2,
-                          fontSize: 11,
-                          fontWeight: "bold",
+                          padding: 4,
+                          width: 150,
+                          backgroundColor: "#fff",
+                          marginRight: 8,
+                          borderRadius: 4,
+                          justifyContent: "center",
+                          alignItems: "center",
                         }}
                       >
-                        {data["price-text"]}{" "}
-                        <Text
-                          key={i + "shipping"}
-                          style={{
-                            paddingLeft: 2,
-                            padding: 2,
-                            fontSize: 8,
-                            fontWeight: "normal",
-                          }}
-                        >
-                          {data["shipping"]}
-                        </Text>
-                      </Text>
-                      <Text
-                        key={i + "origin"}
-                        numberOfLines={1}
-                        style={{ paddingLeft: 4, padding: 2, fontSize: 10 }}
+                        <Skeleton
+                          height={130}
+                          width={140}
+                          style={{ borderRadius: 10 }}
+                        />
+                        <Skeleton
+                          height={20}
+                          width={140}
+                          style={{ borderRadius: 10, marginTop: 4 }}
+                        />
+                        <Skeleton
+                          height={20}
+                          width={140}
+                          style={{ borderRadius: 10, marginTop: 4 }}
+                        />
+                      </View>
+                      <View
+                        style={{
+                          padding: 4,
+                          width: 150,
+                          backgroundColor: "#fff",
+                          marginRight: 8,
+                          borderRadius: 4,
+                          justifyContent: "center",
+                          alignItems: "center",
+                        }}
                       >
-                        {data["origin"]}
-                      </Text>
+                        <Skeleton
+                          height={130}
+                          width={140}
+                          style={{ borderRadius: 10 }}
+                        />
+                        <Skeleton
+                          height={20}
+                          width={140}
+                          style={{ borderRadius: 10, marginTop: 4 }}
+                        />
+                        <Skeleton
+                          height={20}
+                          width={140}
+                          style={{ borderRadius: 10, marginTop: 4 }}
+                        />
+                      </View>
+                    </ScrollView>
+                  )}
+                  {this.state.loading === false &&
+                    this.state.response.length > 0 && (
+                      <ScrollView
+                        scrollEnabled={!this.state.loading}
+                        horizontal={true}
+                        style={{ paddingBottom: 12 }}
+                      >
+                        {this.state.response.map((data, i) => (
+                          <TouchableOpacity
+                            key={i + "TouchableOpacity"}
+                            onPress={() => {
+                              WebBrowser.openBrowserAsync(data.link);
+                            }}
+                            style={{ alignSelf: "center" }}
+                          >
+                            <View
+                              key={i + "wrapView"}
+                              style={{
+                                padding: 4,
+                                width: 150,
+                                backgroundColor: "#fff",
+                                marginRight: 8,
+                                borderRadius: 4,
+                                justifyContent: "center",
+                              }}
+                            >
+                              <Image
+                                key={i + "Image"}
+                                source={{ uri: data.source }}
+                                style={{ width: "100%", height: 130 }}
+                              />
+                              <Text
+                                key={i + "title"}
+                                numberOfLines={1}
+                                style={{
+                                  marginTop: 4,
+                                  padding: 4,
+                                  fontSize: 12,
+                                  fontWeight: "bold",
+                                }}
+                              >
+                                {data.title}
+                              </Text>
+                              <Text
+                                key={i + "price-text"}
+                                numberOfLines={1}
+                                style={{
+                                  paddingLeft: 4,
+                                  padding: 2,
+                                  fontSize: 11,
+                                  fontWeight: "bold",
+                                }}
+                              >
+                                {data["price-text"]}{" "}
+                                <Text
+                                  key={i + "shipping"}
+                                  style={{
+                                    paddingLeft: 2,
+                                    padding: 2,
+                                    fontSize: 8,
+                                    fontWeight: "normal",
+                                  }}
+                                >
+                                  {data["shipping"]}
+                                </Text>
+                              </Text>
+                              <Text
+                                key={i + "origin"}
+                                numberOfLines={1}
+                                style={{
+                                  paddingLeft: 4,
+                                  padding: 2,
+                                  fontSize: 10,
+                                }}
+                              >
+                                {data["origin"]}
+                              </Text>
 
-                      {/* {
+                              {/* {
           "link": "https://www.google.com/url?q=https://www.lazada.vn/products/banh-gao-shouyu-mat-ong-ichi-100g-i1596610196-s6844362065.html&sa=U&ved=0ahUKEwiRlqOiyKj7AhUHCIgKHfCAC3AQ2SkILw&usg=AOvVaw04zreyoU6hBE1LnFuBi_Fc",
           "origin": "từ Lazada Vietnam",
           "price": 25625,
@@ -443,10 +556,13 @@ export default class TabOneScreen extends React.Component {
           "source": "https://encrypted-tbn3.gstatic.com/shopping?q=tbn:ANd9GcSZZ3RvSiKa5qU7_6hMoL6yiwcLnpAQ06DsuugQPmcE5vQ8PpPe_aFW1-w1Y7kxEiXN5_p4YA&usqp=CAE",
           "title": "Bánh Gạo Shouyu Mật Ong Ichi 100G"
       } */}
-                    </View>
-                  </TouchableOpacity>
-                ))}
-              </ScrollView>
+                            </View>
+                          </TouchableOpacity>
+                        ))}
+                      </ScrollView>
+                    )}
+                </View>
+              </View>
             )}
             {this.state.loading === false && this.state.response.length === 0 && (
               <View
@@ -495,6 +611,49 @@ export default class TabOneScreen extends React.Component {
     }
   }
 }
+
+const Skeleton = ({ width, height, style }) => {
+  const translateX = useRef(new Animated.Value(-width)).current;
+  useEffect(() => {
+    Animated.loop(
+      Animated.timing(translateX, {
+        toValue: width,
+        useNativeDriver: true,
+        duration: 1000,
+      })
+    ).start();
+  }, [width]);
+  return (
+    <View
+      style={StyleSheet.flatten([
+        {
+          width: width,
+          height: height,
+          backgroundColor: "rgba(0,0,0,0.12)",
+          overflow: "hidden",
+        },
+        style,
+      ])}
+    >
+      <Animated.View
+        style={{
+          width: "100%",
+          height: "100%",
+          transform: [{ translateX: translateX }],
+        }}
+      >
+        <LinearGradient
+          style={{
+            width: "100%",
+            height: "100%",
+          }}
+          colors={["transparent", "rgba(0,0,0,0.05)", "transparent"]}
+          start={{ x: 1, y: 1 }}
+        ></LinearGradient>
+      </Animated.View>
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
