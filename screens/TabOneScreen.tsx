@@ -48,6 +48,7 @@ class TabOneScreen extends React.Component<Props> {
     heightRenderedImage: 0,
     modalTarget: null,
     settings: null,
+    cameraFocus: true,
   };
   /**
    *
@@ -270,7 +271,7 @@ class TabOneScreen extends React.Component<Props> {
                   }}
                 >
                   <ReactNativeZoomableView
-                    zoomEnabled={true}
+                    zoomEnabled={!this.state.loading}
                     bindToBorders={true}
                     maxZoom={1.5}
                     minZoom={0.5}
@@ -279,6 +280,7 @@ class TabOneScreen extends React.Component<Props> {
                     state={{ padding: 10, backgroundColor: "#fff" }}
                   >
                     <TouchableWithoutFeedback
+                      disabled={this.state.loading}
                       onPress={() => {
                         this.reTracking();
                       }}
@@ -410,7 +412,7 @@ class TabOneScreen extends React.Component<Props> {
                       this.setState({ modalVisible: false });
                     }}
                     style={{
-                      left: -10,
+                      left: -15,
                       width: this.state.deviceWidth,
                       position: "absolute",
                       height: "100%",
@@ -609,6 +611,30 @@ class TabOneScreen extends React.Component<Props> {
                             ))}
                           </ScrollView>
                         )}
+                      {this.state.loading === false &&
+                        this.state.productsSuggested.length == 0 && (
+                          <View
+                            style={{
+                              height: "100%",
+                              width: "100%",
+                              backgroundColor: "#fff",
+                              alignSelf: "center",
+                              alignItems: "center",
+                              justifyContent: "center",
+                            }}
+                          >
+                            <Image
+                              resizeMode="contain"
+                              source={require("../assets/images/notfound.png")}
+                              style={{
+                                width: "100%",
+                                height: "70%",
+                                // backgroundColor: "#111",
+                              }}
+                            ></Image>
+                            <Text>No products found</Text>
+                          </View>
+                        )}
                     </View>
                   </TouchableOpacity>
                 </Modal>
@@ -627,7 +653,7 @@ class TabOneScreen extends React.Component<Props> {
                   }}
                 >
                   <Camera
-                    autoFocus={true}
+                    autoFocus={this.state.cameraFocus}
                     ref={(ref) => {
                       this.camera = ref;
                     }}
@@ -668,6 +694,9 @@ class TabOneScreen extends React.Component<Props> {
                   >
                     <TouchableOpacity
                       style={{ alignSelf: "center" }}
+                      onLongPress={() => {
+                        this.setState({ cameraFocus: !this.state.cameraFocus });
+                      }}
                       onPress={() => {
                         this.pickImage();
                       }}

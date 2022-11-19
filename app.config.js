@@ -4,7 +4,7 @@ export default ({ config }) => {
         name: 'product-detecting-ui',
         version: '1.0.0',
         extra: {
-            "apiUrl": "http://192.168.2.103:8080",
+            "apiUrl": "http://192.168.2.100:8080",
             "fireBaseConfig": {
                 apiKey: "AIzaSyBoV3zgLbSXy6VscXSp5k4F_GYH1KIZe5Y",
                 authDomain: "supermarket-product-detecting.firebaseapp.com",
