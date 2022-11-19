@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import {
   SafeAreaView,
   StyleSheet,
@@ -9,6 +9,17 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 
 const TabTwoScreen = ({ route, navigation }) => {
+  // create element ref
+  React.useEffect(() => {
+    const unsubscribe = navigation.addListener("focus", () => {
+      // The screen is focused
+      // Call any action
+    });
+
+    // Return the function to unsubscribe from the event so it gets removed on unmount
+    return unsubscribe;
+  }, [navigation]);
+
   return (
     <SafeAreaView
       style={{ flex: 1, justifyContent: "center", backgroundColor: "#fff" }}

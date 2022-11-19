@@ -9,11 +9,13 @@ import {
   NavigationContainer,
   DefaultTheme,
   DarkTheme,
+  useNavigation,
+  CommonActions,
 } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createStackNavigator } from "@react-navigation/stack";
 import * as React from "react";
-import { ColorSchemeName, Pressable } from "react-native";
+import { ColorSchemeName, Pressable, TouchableOpacity } from "react-native";
 import Colors from "../constants/Colors";
 import useColorScheme from "../hooks/useColorScheme";
 import ModalScreen from "../screens/ModalScreen";
@@ -29,7 +31,6 @@ import {
   RootTabScreenProps,
 } from "../types";
 import LinkingConfiguration from "./LinkingConfiguration";
-
 export default function Navigation({
   colorScheme,
 }: {
@@ -88,7 +89,7 @@ function MenuStack() {
       <Menu.Screen
         name="TabTwoScreen"
         component={TabTwoScreen}
-        options={{ title: "Details Page" }}
+        options={{ title: "Menu Page" }}
       />
       <Menu.Screen
         name="Settings"
@@ -98,7 +99,7 @@ function MenuStack() {
       <Menu.Screen
         name="History"
         component={History}
-        options={{ title: "Setting Page" }}
+        options={{ title: "History Page" }}
       />
     </Menu.Navigator>
   );
@@ -111,7 +112,7 @@ function BottomTabNavigator() {
       initialRouteName="TabOne"
       screenOptions={{
         tabBarActiveTintColor: Colors[colorScheme].tint,
-        tabBarStyle: { height: 75 },
+        tabBarStyle: { height: 90 },
       }}
     >
       <BottomTab.Screen
@@ -140,7 +141,7 @@ function BottomTabNavigator() {
     </BottomTab.Navigator>
   );
 }
-
+// this.props.navigation.dispatch(resetAction);
 /**
  * You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
  */

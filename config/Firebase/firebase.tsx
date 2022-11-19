@@ -8,6 +8,7 @@ import {
   getFirestore,
   setDoc,
   updateDoc,
+  collection,
 } from "firebase/firestore";
 import Constants from "expo-constants";
 const firebaseConfig = Constants.expoConfig?.extra?.fireBaseConfig;
@@ -21,9 +22,11 @@ try {
 }
 // Initialize Firebase
 const db = getFirestore();
-const document = doc(db, "menu", "settings");
+const settings = doc(db, "menu", "settings");
+const history = collection(db, "history");
 const Firebase = {
-  document: doc(db, "menu", "settings"),
+  settings: settings,
+  history: history,
 };
 
 export default Firebase;

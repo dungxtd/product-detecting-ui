@@ -3,28 +3,46 @@ import React from "react";
 import { StyleSheet, View, Switch, Text } from "react-native";
 import { getDoc, updateDoc } from "firebase/firestore";
 import FirebaseProvider from "../config/Firebase/index";
-const document = FirebaseProvider.document;
-export default class Setting extends React.Component {
+import { withNavigation } from "react-navigation";
+const settingDocument = FirebaseProvider.settings;
+interface Props {
+  navigation: any;
+}
+
+class Setting extends React.Component<Props> {
   state = {
     onlyHightestClass: null,
     fireBaseConfig: Constants.expoConfig?.extra?.fireBaseConfig,
   };
+  unsubscribe: any;
+  componentWillUnmount() {
+    this.unsubscribe();
+  }
   async componentDidMount() {
     const me = this;
-    const docSnap = await getDoc(document),
-      settings = docSnap.data();
-    me.setState(settings);
+    this.unsubscribe = this.props.navigation.addListener("focus", async () => {
+      // Will be called twice when navigated from dashboard buttons
+      // console.log(this.props.navigation.);
+      // this.props.navigation.navigate("TabTwoScreen");
+      const docSnap = await getDoc(settingDocument),
+        settings = docSnap.data();
+      me.setState(settings);
+    });
   }
 
   onChangeShowingOnlyHightestClass = async (value: boolean) => {
     const me = this;
-    await updateDoc(document, { onlyHightestClass: value })
-      .then(() => {})
-      .catch((err) => console.log(err));
+    if (me.state.onlyHightestClass === value) {
+      return;
+    }
     me.setState({
       onlyHightestClass: value,
     });
+    await updateDoc(settingDocument, { onlyHightestClass: value })
+      .then(() => {})
+      .catch((err) => console.log(err));
   };
+
   render() {
     return (
       <View style={styles.container}>
@@ -70,3 +88,4 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
 });
+export default withNavigation(Setting);
