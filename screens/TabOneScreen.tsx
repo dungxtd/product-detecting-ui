@@ -81,6 +81,7 @@ class TabOneScreen extends React.Component<Props> {
       me.setState({ settings: settings });
       let paramRouter = me.props.route?.params;
       if (paramRouter) {
+        me.reTracking();
         me.setState({ takenImage: paramRouter.uri, loading: true });
         me.onProcess(paramRouter);
       }
@@ -312,6 +313,7 @@ class TabOneScreen extends React.Component<Props> {
                               top:
                                 (me.state.deviceHeight -
                                   me.state.heightRenderedImage) /
+                                  2 +
                                 2,
                               left: 0,
                             }}
