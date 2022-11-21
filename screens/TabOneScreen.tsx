@@ -425,7 +425,7 @@ class TabOneScreen extends React.Component<Props> {
                   >
                     <View
                       style={{
-                        height: 210,
+                        height: 200,
                         width: "100%",
                         position: "absolute",
                         bottom: 50,
@@ -444,6 +444,10 @@ class TabOneScreen extends React.Component<Props> {
                             style={{
                               padding: 4,
                               width: 150,
+                              marginTop: 13,
+                              height: 162,
+                              borderColor: "#dedede",
+                              borderWidth: 1,
                               backgroundColor: "#fff",
                               marginRight: 8,
                               borderRadius: 4,
@@ -452,7 +456,7 @@ class TabOneScreen extends React.Component<Props> {
                             }}
                           >
                             <Skeleton
-                              height={130}
+                              height={80}
                               width={140}
                               style={{ borderRadius: 10 }}
                             />
@@ -471,6 +475,10 @@ class TabOneScreen extends React.Component<Props> {
                             style={{
                               padding: 4,
                               width: 150,
+                              marginTop: 13,
+                              height: 162,
+                              borderColor: "#dedede",
+                              borderWidth: 1,
                               backgroundColor: "#fff",
                               marginRight: 8,
                               borderRadius: 4,
@@ -479,7 +487,7 @@ class TabOneScreen extends React.Component<Props> {
                             }}
                           >
                             <Skeleton
-                              height={130}
+                              height={80}
                               width={140}
                               style={{ borderRadius: 10 }}
                             />
@@ -498,6 +506,10 @@ class TabOneScreen extends React.Component<Props> {
                             style={{
                               padding: 4,
                               width: 150,
+                              marginTop: 13,
+                              height: 162,
+                              borderColor: "#dedede",
+                              borderWidth: 1,
                               backgroundColor: "#fff",
                               marginRight: 8,
                               borderRadius: 4,
@@ -547,6 +559,8 @@ class TabOneScreen extends React.Component<Props> {
                                     width: 150,
                                     height: 162,
                                     backgroundColor: "#fff",
+                                    borderColor: "#dedede",
+                                    borderWidth: 1,
                                     marginRight: 8,
                                     borderRadius: 4,
                                     justifyContent: "center",
